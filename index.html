@@ -1,104 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic settings for the webpage -->
     <meta charset="UTF-8">
-    <!-- This line helps with mobile display and prevents unwanted zooming -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Unciv Mod Maker</title>
-    <!-- Load icons and styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Load the code editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
 </head>
 <body>
-    <!-- Left side menu -->
-    <div class="sidebar">
-        <!-- Search and filter controls -->
-        <div class="controls">
-            <input type="text" id="searchInput" placeholder="Search uniques...">
-            <select id="categoryFilter">
-                <option value="all">All Categories</option>
-                <option value="nation">Nation</option>
-                <option value="unit">Unit</option>
-                <option value="building">Building</option>
-                <option value="promotion">Promotion</option>
-                <option value="terrain">Terrain</option>
-                <option value="improvement">Improvement</option>
-                <option value="resource">Resource</option>
-                <option value="tech">Technology</option>
-                <option value="policy">Policy</option>
-                <option value="belief">Belief</option>
-                <option value="era">Era</option>
-                <option value="difficulty">Difficulty</option>
-                <option value="citystate">City-State</option>
-                <option value="victory">Victory Type</option>
-                <option value="global">Global</option>
-            </select>
-        </div>
+    <!-- Mobile Toggle Button -->
+    <div class="mobile-toggle">
+        <button id="sidebarToggle">
+            <i class="fas fa-bars"></i> Toggle Categories
+        </button>
+    </div>
 
-        <!-- Categories and their buttons -->
-        <div id="buttonContainer">
-            <!-- Nation Category -->
-            <div class="category" data-category="nation">
-                <div class="category-header">
-                    Nation Uniques <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="collapsible-content">
-                    <button class="unique-button" data-unique="'[+1] Sight for all military units'">Enhanced Sight</button>
-                    <button class="unique-button" data-unique="'[+20]% Strength for all units during Golden Age'">Golden Age Strength</button>
-                    <button class="unique-button" data-unique="'[+1 Culture, +1 Gold] from every [Forest]'">Forest Bonus</button>
-                </div>
+    <!-- Sidebar Wrapper -->
+    <div class="sidebar-wrapper">
+        <div class="sidebar">
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Search uniques...">
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="nation">Nation</option>
+                    <option value="unit">Unit</option>
+                    <option value="building">Building</option>
+                    <option value="promotion">Promotion</option>
+                    <option value="terrain">Terrain</option>
+                    <option value="improvement">Improvement</option>
+                    <option value="resource">Resource</option>
+                    <option value="tech">Technology</option>
+                    <option value="policy">Policy</option>
+                    <option value="belief">Belief</option>
+                    <option value="era">Era</option>
+                    <option value="difficulty">Difficulty</option>
+                    <option value="citystate">City-State</option>
+                    <option value="victory">Victory Type</option>
+                    <option value="global">Global</option>
+                </select>
             </div>
 
-            <!-- Unit Category -->
-            <div class="category" data-category="unit">
-                <div class="category-header">
-                    Unit Uniques <i class="fas fa-chevron-down"></i>
+            <div id="buttonContainer">
+                <!-- Nation Category -->
+                <div class="category" data-category="nation">
+                    <div class="category-header">
+                        Nation Uniques <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content">
+                        <button class="unique-button" data-unique="'[+1] Sight for all military units'">Enhanced Sight</button>
+                        <button class="unique-button" data-unique="'[+20]% Strength for all units during Golden Age'">Golden Age Strength</button>
+                        <button class="unique-button" data-unique="'[+1 Culture, +1 Gold] from every [Forest]'">Forest Bonus</button>
+                    </div>
                 </div>
-                <div class="collapsible-content">
-                    <button class="unique-button" data-unique="'Can move after attacking'">Move After Attack</button>
-                    <button class="unique-button" data-unique="'[+33]% Strength vs cities'">City Attack Bonus</button>
-                    <button class="unique-button" data-unique="'No movement cost to pillage'">Free Pillage</button>
-                </div>
-            </div>
 
-            <!-- Building Category -->
-            <div class="category" data-category="building">
-                <div class="category-header">
-                    Building Uniques <i class="fas fa-chevron-down"></i>
+                <!-- Unit Category -->
+                <div class="category" data-category="unit">
+                    <div class="category-header">
+                        Unit Uniques <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content">
+                        <button class="unique-button" data-unique="'Can move after attacking'">Move After Attack</button>
+                        <button class="unique-button" data-unique="'[+33]% Strength vs cities'">City Attack Bonus</button>
+                        <button class="unique-button" data-unique="'No movement cost to pillage'">Free Pillage</button>
+                    </div>
                 </div>
-                <div class="collapsible-content">
-                    <button class="unique-button" data-unique="'Must be next to [Desert]'">Desert Requirement</button>
-                    <button class="unique-button" data-unique="'[+2 Production] from [Strategic] resources'">Strategic Resource Bonus</button>
-                    <button class="unique-button" data-unique="'Must be built on [Hills]'">Hills Requirement</button>
-                </div>
-            </div>
 
-            <!-- Terrain Category -->
-            <div class="category" data-category="terrain">
-                <div class="category-header">
-                    Terrain Uniques <i class="fas fa-chevron-down"></i>
+                <!-- Building Category -->
+                <div class="category" data-category="building">
+                    <div class="category-header">
+                        Building Uniques <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content">
+                        <button class="unique-button" data-unique="'Must be next to [Desert]'">Desert Requirement</button>
+                        <button class="unique-button" data-unique="'[+2 Production] from [Strategic] resources'">Strategic Resource Bonus</button>
+                        <button class="unique-button" data-unique="'Must be built on [Hills]'">Hills Requirement</button>
+                    </div>
                 </div>
-                <div class="collapsible-content">
-                    <button class="unique-button" data-unique="'Rough terrain'">Rough Terrain</button>
-                    <button class="unique-button" data-unique="'Occurs at temperature between [-0.5] and [0.5] and humidity between [0.4] and [0.8]'">Climate Range</button>
+
+                <!-- Terrain Category -->
+                <div class="category" data-category="terrain">
+                    <div class="category-header">
+                        Terrain Uniques <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content">
+                        <button class="unique-button" data-unique="'Rough terrain'">Rough Terrain</button>
+                        <button class="unique-button" data-unique="'Occurs at temperature between [-0.5] and [0.5] and humidity between [0.4] and [0.8]'">Climate Range</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right side editor area -->
+    <!-- Editor Container -->
     <div class="editor-container">
         <div id="monaco-editor"></div>
     </div>
 
-    <!-- JavaScript to make everything work -->
     <script>
         let editor;
 
-        // Set up the code editor
+        // Initialize Monaco Editor
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
         require(['vs/editor/editor.main'], function() {
             editor = monaco.editor.create(document.getElementById('monaco-editor'), {
@@ -144,7 +146,22 @@
             });
         });
 
-        // Make categories expandable/collapsible
+        // Sidebar toggle functionality
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebarWrapper.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside
+        sidebarWrapper.addEventListener('click', (e) => {
+            if (e.target === sidebarWrapper) {
+                sidebarWrapper.classList.remove('active');
+            }
+        });
+
+        // Category collapse/expand functionality
         document.querySelectorAll('.category-header').forEach(header => {
             header.addEventListener('click', () => {
                 const category = header.parentElement;
@@ -155,7 +172,7 @@
             });
         });
 
-        // Make buttons add text to the editor
+        // Button click handler
         document.querySelectorAll('.unique-button').forEach(button => {
             button.addEventListener('click', function() {
                 const unique = this.dataset.unique;
@@ -172,10 +189,14 @@
                     }]);
                     editor.focus();
                 }
+                // Close sidebar on mobile after selecting a unique
+                if (window.innerWidth <= 767) {
+                    sidebarWrapper.classList.remove('active');
+                }
             });
         });
 
-        // Make search and filter work
+        // Search and filter functionality
         document.getElementById('searchInput').addEventListener('input', filterButtons);
         document.getElementById('categoryFilter').addEventListener('change', filterButtons);
 
@@ -200,7 +221,7 @@
             });
         }
 
-        // Add keyboard shortcut for formatting (Shift + Alt + F)
+        // Format shortcut (Shift + Alt + F)
         document.addEventListener('keydown', function(e) {
             if (e.shiftKey && e.altKey && e.key === 'F') {
                 if (editor) {
