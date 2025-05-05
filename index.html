@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unciv Mod Maker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .sidebar {
+            padding: 10px;
+            background: #252526;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            background: #252526;
+            padding: 10px 0;
+            margin-bottom: 15px;
+            z-index: 1;
+        }
+
+        .category {
+            margin-bottom: 15px;
+            border: 1px solid #404040;
+            border-radius: 4px;
+            padding: 10px;
+            background: #2d2d2d;
+        }
+
+        .category-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #d4d4d4;
+        }
+
+        .unique-button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: #0e639c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+
+        .unique-button:hover {
+            background: #1177bb;
+        }
+
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #monaco-editor {
+            flex-grow: 1;
+            border: 1px solid #404040;
+            border-radius: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #404040;
+            border-radius: 4px;
+            background: #3c3c3c;
+            color: #d4d4d4;
+        }
+
+        input::placeholder {
+            color: #888;
+        }
+
+        .collapsible-content {
+            display: none;
+        }
+
+        .expanded .collapsible-content {
+            display: block;
+        }
+
+        /* Additional styles for the editor container */
+        .editor-container {
+            height: calc(100vh - 40px);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search uniques...">
+            <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="nation">Nation</option>
+                <option value="unit">Unit</option>
+                <option value="building">Building</option>
+                <option value="promotion">Promotion</option>
+                <option value="terrain">Terrain</option>
+                <option value="improvement">Improvement</option>
+                <option value="resource">Resource</option>
+                <option value="tech">Technology</option>
+                <option value="policy">Policy</option>
+                <option value="belief">Belief</option>
+                <option value="era">Era</option>
+                <option value="difficulty">Difficulty</option>
+                <option value="citystate">City-State</option>
+                <option value="victory">Victory Type</option>
+                <option value="global">Global</option>
+            </select>
+        </div>
+
+        <div id="buttonContainer">
+            <!-- Nation Category -->
+            <div class="category" data-category="nation">
+                <div class="category-header">
+                    Nation Uniques <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content">
+                    <button class="unique-button" data-unique="'[+1] Sight for all military units'">Enhanced Sight</button>
+                    <button class="unique-button" data-unique="'[+20]% Strength for all units during Golden Age'">Golden Age Strength</button>
+                    <button class="unique-button" data-unique="'[+1 Culture, +1 Gold] from every [Forest]'">Forest Bonus</button>
+                </div>
+            </div>
+
+            <!-- Unit Category -->
+            <div class="category" data-category="unit">
+                <div class="category-header">
+                    Unit Uniques <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content">
+                    <button class="unique-button" data-unique="'Can move after attacking'">Move After Attack</button>
+                    <button class="unique-button" data-unique="'[+33]% Strength vs cities'">City Attack Bonus</button>
+                    <button class="unique-button" data-unique="'No movement cost to pillage'">Free Pillage</button>
+                </div>
+            </div>
+
+            <!-- Building Category -->
+            <div class="category" data-category="building">
+                <div class="category-header">
+                    Building Uniques <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content">
+                    <button class="unique-button" data-unique="'Must be next to [Desert]'">Desert Requirement</button>
+                    <button class="unique-button" data-unique="'[+2 Production] from [Strategic] resources'">Strategic Resource Bonus</button>
+                    <button class="unique-button" data-unique="'Must be built on [Hills]'">Hills Requirement</button>
+                </div>
+            </div>
+
+            <!-- Terrain Category -->
+            <div class="category" data-category="terrain">
+                <div class="category-header">
+                    Terrain Uniques <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content">
+                    <button class="unique-button" data-unique="'Rough terrain'">Rough Terrain</button>
+                    <button class="unique-button" data-unique="'Occurs at temperature between [-0.5] and [0.5] and humidity between [0.4] and [0.8]'">Climate Range</button>
+                </div>
+            </div>
+
+            <!-- Add more categories as needed -->
+        </div>
+    </div>
+
+    <div class="editor-container">
+        <div id="monaco-editor"></div>
+    </div>
+
+    <script>
+        let editor;
+
+        // Initialize Monaco Editor
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                value: '{\n    "uniques": []\n}',
+                language: 'json',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: { enabled: true },
+                formatOnPaste: true,
+                formatOnType: true,
+                scrollBeyondLastLine: false,
+                tabSize: 2,
+                fontSize: 14,
+                wordWrap: 'on',
+                lineNumbers: 'on',
+                renderWhitespace: 'selection',
+                rulers: [80],
+                bracketPairColorization: {
+                    enabled: true
+                }
+            });
+
+            // Add custom JSON completion items
+            monaco.languages.registerCompletionItemProvider('json', {
+                provideCompletionItems: function(model, position) {
+                    return {
+                        suggestions: [
+                            {
+                                label: 'uniques',
+                                kind: monaco.languages.CompletionItemKind.Property,
+                                insertText: '"uniques": []',
+                                documentation: 'Array of unique attributes'
+                            }
+                        ]
+                    };
+                }
+            });
+        });
+
+        // Category collapse/expand functionality
+        document.querySelectorAll('.category-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const category = header.parentElement;
+                category.querySelector('.collapsible-content').style.display = 
+                    category.querySelector('.collapsible-content').style.display === 'none' ? 'block' : 'none';
+                header.querySelector('i').classList.toggle('fa-chevron-up');
+                header.querySelector('i').classList.toggle('fa-chevron-down');
+            });
+        });
+
+        // Button click handler
+        document.querySelectorAll('.unique-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const unique = this.dataset.unique;
+                if (editor) {
+                    const position = editor.getPosition();
+                    editor.executeEdits('', [{
+                        range: new monaco.Range(
+                            position.lineNumber,
+                            position.column,
+                            position.lineNumber,
+                            position.column
+                        ),
+                        text: unique
+                    }]);
+                    editor.focus();
+                }
+            });
+        });
+
+        // Search and filter functionality
+        document.getElementById('searchInput').addEventListener('input', filterButtons);
+        document.getElementById('categoryFilter').addEventListener('change', filterButtons);
+
+        function filterButtons() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+
+            document.querySelectorAll('.category').forEach(categoryDiv => {
+                if (category === 'all' || categoryDiv.dataset.category === category) {
+                    categoryDiv.style.display = 'block';
+                    const buttons = categoryDiv.querySelectorAll('.unique-button');
+                    let hasVisibleButtons = false;
+                    buttons.forEach(button => {
+                        const matches = button.textContent.toLowerCase().includes(searchTerm);
+                        button.style.display = matches ? 'block' : 'none';
+                        if (matches) hasVisibleButtons = true;
+                    });
+                    categoryDiv.style.display = hasVisibleButtons ? 'block' : 'none';
+                } else {
+                    categoryDiv.style.display = 'none';
+                }
+            });
+        }
+
+        // Add keyboard shortcut to format JSON (Shift + Alt + F)
+        document.addEventListener('keydown', function(e) {
+            if (e.shiftKey && e.altKey && e.key === 'F') {
+                if (editor) {
+                    editor.getAction('editor.action.formatDocument').run();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
