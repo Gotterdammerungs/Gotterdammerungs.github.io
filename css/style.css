@@ -1,10 +1,15 @@
+/* Make sure text doesn't auto-resize */
+* {
+    -webkit-text-size-adjust: none;
+}
+
+/* Main page layout */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: minmax(250px, 300px) 1fr;
-    gap: 10px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
     box-sizing: border-box;
     background-color: #1e1e1e;
@@ -12,15 +17,25 @@ body {
     overflow: hidden;
 }
 
+/* Left side menu styles */
 .sidebar {
     padding: 10px;
     background: #252526;
-    border-radius: 5px;
     overflow-y: auto;
-    height: calc(100vh - 20px);
-    min-width: 250px;
+    height: 50vh;
+    width: 100%;
+    border-bottom: 2px solid #404040;
 }
 
+/* Editor container styles */
+.editor-container {
+    flex: 1;
+    width: 100%;
+    height: 50vh;
+    min-height: 200px;
+}
+
+/* Search and filter controls area */
 .controls {
     position: sticky;
     top: 0;
@@ -30,14 +45,16 @@ body {
     z-index: 1;
 }
 
+/* Category box styles */
 .category {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    padding: 8px;
     border: 1px solid #404040;
     border-radius: 4px;
-    padding: 10px;
     background: #2d2d2d;
 }
 
+/* Category header styles */
 .category-header {
     font-weight: bold;
     margin-bottom: 10px;
@@ -48,11 +65,12 @@ body {
     color: #d4d4d4;
 }
 
+/* Button styles */
 .unique-button {
     display: block;
     width: 100%;
-    padding: 8px;
-    margin: 5px 0;
+    padding: 12px 8px;
+    margin: 3px 0;
     background: #0e639c;
     color: white;
     border: none;
@@ -62,28 +80,12 @@ body {
     transition: background-color 0.2s;
 }
 
+/* Button hover effect */
 .unique-button:hover {
     background: #1177bb;
 }
 
-.editor-section {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.editor-container {
-    height: calc(100vh - 20px);
-    flex: 1;
-    min-width: 0;
-    display: flex;
-}
-
-#monaco-editor {
-    width: 100%;
-    height: 100%;
-}
-
+/* Make input boxes and dropdown menus look nice */
 input, select {
     width: 100%;
     padding: 8px;
@@ -92,16 +94,43 @@ input, select {
     border-radius: 4px;
     background: #3c3c3c;
     color: #d4d4d4;
+    font-size: 16px !important;
+    max-height: 40px;
 }
 
+/* Style for placeholder text in search box */
 input::placeholder {
     color: #888;
 }
 
+/* Hide/show category content */
 .collapsible-content {
     display: none;
 }
 
 .expanded .collapsible-content {
     display: block;
+}
+
+/* For desktop computers (screens wider than 768px) */
+@media (min-width: 768px) {
+    body {
+        flex-direction: row;
+        padding: 10px;
+    }
+
+    .sidebar {
+        width: 300px;
+        height: calc(100vh - 20px);
+        border-bottom: none;
+    }
+
+    .editor-container {
+        height: calc(100vh - 20px);
+    }
+}
+
+/* Make sure the editor text is big enough */
+.monaco-editor {
+    font-size: 16px !important;
 }
