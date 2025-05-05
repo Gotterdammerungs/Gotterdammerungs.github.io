@@ -134,3 +134,72 @@ input::placeholder {
 .monaco-editor {
     font-size: 16px !important;
 }
+/* Add these new styles */
+.mobile-toggle {
+    display: none;
+    padding: 10px;
+    background: #252526;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#sidebarToggle {
+    width: 100%;
+    padding: 10px;
+    background: #0e639c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#sidebarToggle:hover {
+    background: #1177bb;
+}
+
+/* Update the media query for mobile devices */
+@media (max-width: 767px) {
+    .mobile-toggle {
+        display: block;
+    }
+
+    .sidebar-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+        display: none;
+    }
+
+    .sidebar-wrapper.active {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 50px; /* Height of toggle button + padding */
+        left: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-wrapper.active .sidebar {
+        transform: translateX(0);
+    }
+
+    .editor-container {
+        margin-top: 0;
+        height: calc(100vh - 50px);
+    }
+}
