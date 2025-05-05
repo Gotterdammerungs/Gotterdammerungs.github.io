@@ -1,1 +1,107 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: minmax(250px, 300px) 1fr;
+    gap: 10px;
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    overflow: hidden;
+}
 
+.sidebar {
+    padding: 10px;
+    background: #252526;
+    border-radius: 5px;
+    overflow-y: auto;
+    height: calc(100vh - 20px);
+    min-width: 250px;
+}
+
+.controls {
+    position: sticky;
+    top: 0;
+    background: #252526;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    z-index: 1;
+}
+
+.category {
+    margin-bottom: 15px;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    padding: 10px;
+    background: #2d2d2d;
+}
+
+.category-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d4d4d4;
+}
+
+.unique-button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    background: #0e639c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.unique-button:hover {
+    background: #1177bb;
+}
+
+.editor-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.editor-container {
+    height: calc(100vh - 20px);
+    flex: 1;
+    min-width: 0;
+    display: flex;
+}
+
+#monaco-editor {
+    width: 100%;
+    height: 100%;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    background: #3c3c3c;
+    color: #d4d4d4;
+}
+
+input::placeholder {
+    color: #888;
+}
+
+.collapsible-content {
+    display: none;
+}
+
+.expanded .collapsible-content {
+    display: block;
+}
