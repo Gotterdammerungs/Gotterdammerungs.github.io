@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic settings for the webpage -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- This line helps with mobile display and prevents unwanted zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Unciv Mod Maker</title>
+    <!-- Load icons and styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Load the code editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
 </head>
 <body>
+    <!-- Left side menu -->
     <div class="sidebar">
+        <!-- Search and filter controls -->
         <div class="controls">
             <input type="text" id="searchInput" placeholder="Search uniques...">
             <select id="categoryFilter">
@@ -32,6 +38,7 @@
             </select>
         </div>
 
+        <!-- Categories and their buttons -->
         <div id="buttonContainer">
             <!-- Nation Category -->
             <div class="category" data-category="nation">
@@ -82,14 +89,16 @@
         </div>
     </div>
 
+    <!-- Right side editor area -->
     <div class="editor-container">
         <div id="monaco-editor"></div>
     </div>
 
+    <!-- JavaScript to make everything work -->
     <script>
         let editor;
 
-        // Initialize Monaco Editor
+        // Set up the code editor
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
         require(['vs/editor/editor.main'], function() {
             editor = monaco.editor.create(document.getElementById('monaco-editor'), {
@@ -97,22 +106,28 @@
                 language: 'json',
                 theme: 'vs-dark',
                 automaticLayout: true,
-                minimap: { enabled: true },
+                minimap: { enabled: false },
                 formatOnPaste: true,
                 formatOnType: true,
                 scrollBeyondLastLine: false,
                 tabSize: 2,
-                fontSize: 14,
+                fontSize: 16,
                 wordWrap: 'on',
                 lineNumbers: 'on',
                 renderWhitespace: 'selection',
                 rulers: [80],
                 bracketPairColorization: {
                     enabled: true
-                }
+                },
+                scrollbar: {
+                    vertical: 'visible',
+                    horizontal: 'visible'
+                },
+                lineHeight: 24,
+                padding: { top: 10, bottom: 10 }
             });
 
-            // Add custom JSON completion items
+            // Add helpful suggestions when typing
             monaco.languages.registerCompletionItemProvider('json', {
                 provideCompletionItems: function(model, position) {
                     return {
@@ -129,7 +144,7 @@
             });
         });
 
-        // Category collapse/expand functionality
+        // Make categories expandable/collapsible
         document.querySelectorAll('.category-header').forEach(header => {
             header.addEventListener('click', () => {
                 const category = header.parentElement;
@@ -140,7 +155,7 @@
             });
         });
 
-        // Button click handler
+        // Make buttons add text to the editor
         document.querySelectorAll('.unique-button').forEach(button => {
             button.addEventListener('click', function() {
                 const unique = this.dataset.unique;
@@ -160,7 +175,7 @@
             });
         });
 
-        // Search and filter functionality
+        // Make search and filter work
         document.getElementById('searchInput').addEventListener('input', filterButtons);
         document.getElementById('categoryFilter').addEventListener('change', filterButtons);
 
@@ -185,7 +200,7 @@
             });
         }
 
-        // Add keyboard shortcut to format JSON (Shift + Alt + F)
+        // Add keyboard shortcut for formatting (Shift + Alt + F)
         document.addEventListener('keydown', function(e) {
             if (e.shiftKey && e.altKey && e.key === 'F') {
                 if (editor) {
@@ -195,4 +210,4 @@
         });
     </script>
 </body>
-                    </html>
+</html>
