@@ -1,7 +1,7 @@
 /* CSS Variables for easy customization */
 :root {
     /* Spacing */
-    --page-padding-top: 15px;
+    --page-padding-top: 30px;
     --page-padding-sides: 20px;
     --page-padding-right: 50px;
     --sidebar-width: 320px;
