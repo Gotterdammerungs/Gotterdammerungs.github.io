@@ -1,171 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Unciv Mod Maker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <title>Unciv Uniques</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .category {
+            margin: 20px 0;
+        }
+        .category h2 {
+            color: #2c3e50;
+        }
+        .unique-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .unique-buttons button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .unique-buttons button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <!-- Mobile Toggle Button -->
-    <div class="mobile-toggle">
-        <button id="sidebarToggle">
-            <i class="fas fa-bars"></i> Toggle Categories
-        </button>
-    </div>
-
-    <!-- Sidebar Wrapper -->
-    <div class="sidebar-wrapper">
-        <div class="sidebar">
-            <div class="controls">
-                <input type="text" id="searchInput" placeholder="Search uniques...">
-                <select id="categoryFilter">
-                    <option value="all">All Categories</option>
-                    <option value="nation">Nation</option>
-                    <option value="unit">Unit</option>
-                    <option value="building">Building</option>
-                    <option value="promotion">Promotion</option>
-                    <option value="terrain">Terrain</option>
-                    <option value="improvement">Improvement</option>
-                    <option value="resource">Resource</option>
-                    <option value="tech">Technology</option>
-                    <option value="policy">Policy</option>
-                    <option value="belief">Belief</option>
-                    <option value="era">Era</option>
-                    <option value="difficulty">Difficulty</option>
-                    <option value="citystate">City-State</option>
-                    <option value="victory">Victory Type</option>
-                    <option value="global">Global</option>
-                </select>
-            </div>
-
-            <div id="buttonContainer">
-                <!-- Example Categories -->
-                <div class="category" data-category="nation">
-                    <div class="category-header">
-                        Nation Uniques <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="collapsible-content">
-                        <button class="unique-button" data-unique="'[+1] Sight for all military units'">Enhanced Sight</button>
-                        <button class="unique-button" data-unique="'[+20]% Strength for all units during Golden Age'">Golden Age Strength</button>
-                    </div>
-                </div>
-
-                <div class="category" data-category="unit">
-                    <div class="category-header">
-                        Unit Uniques <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="collapsible-content">
-                        <button class="unique-button" data-unique="'Can move after attacking'">Move After Attack</button>
-                        <button class="unique-button" data-unique="'[+33]% Strength vs cities'">City Attack Bonus</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Editor Container -->
-    <div class="editor-container">
-        <div id="monaco-editor"></div>
-    </div>
+    <h1>Unciv Uniques</h1>
+    <p>Browse and interact with all Unciv uniques organized by their respective categories.</p>
+    <div id="categories"></div>
 
     <script>
-        let editor;
+        // Data extracted from the Unciv uniques website
+        const uniquesData = {
+            "Triggerable uniques": [
+                "Gain a free [buildingName] [cityFilter]",
+                "Remove [buildingFilter] [cityFilter]",
+                "Sell [buildingFilter] buildings [cityFilter]",
+                "Free [unit] appears",
+                "[positiveAmount] free [unit] units appear",
+                "Empire enters a [positiveAmount]-turn Golden Age",
+                "Discover [tech]"
+            ],
+            "UnitTriggerable uniques": [
+                "[unitTriggerTarget] heals [positiveAmount] HP",
+                "[unitTriggerTarget] takes [positiveAmount] damage",
+                "[unitTriggerTarget] gains [amount] XP",
+                "[unitTriggerTarget] upgrades for free",
+                "[unitTriggerTarget] is destroyed"
+            ],
+            "Global uniques": [
+                "[stats]",
+                "[stats] [cityFilter]",
+                "[stats] per [positiveAmount] population [cityFilter]",
+                "[stats] from every [tileFilter/specialist/buildingFilter]",
+                "[relativeAmount]% [stat]",
+                "[relativeAmount]% City-State Influence degradation",
+                "Allied City-States provide [stat] equal to [relativeAmount]% of what they produce for themselves"
+            ],
+            "Nation uniques": [
+                "Starts with [tech]",
+                "Starts with [policy] adopted",
+                "Units ignore terrain costs when moving into any tile with Hills"
+            ],
+            "Building uniques": [
+                "Consumes [amount] [resource]",
+                "Costs [amount] [stockpiledResource]",
+                "Can be purchased with [stat] [cityFilter]",
+                "Limited to [amount] per Civilization",
+                "Must have an owned [tileFilter] within [amount] tiles"
+            ]
+        };
 
-        // Initialize Monaco Editor
-        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
-        require(['vs/editor/editor.main'], function() {
-            const savedContent = localStorage.getItem('editorContent') || ''; // Retrieve saved content or default to an empty string
-            editor = monaco.editor.create(document.getElementById('monaco-editor'), {
-                value: savedContent, // Ensure this is empty if nothing is saved
-                language: 'json',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                formatOnPaste: true,
-                formatOnType: true,
-                scrollBeyondLastLine: false,
-                tabSize: 2,
+        // Dynamically generate categories and buttons
+        const categoriesContainer = document.getElementById('categories');
+
+        for (const [category, uniques] of Object.entries(uniquesData)) {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'category';
+
+            const title = document.createElement('h2');
+            title.innerText = category;
+            categoryDiv.appendChild(title);
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'unique-buttons';
+
+            uniques.forEach(unique => {
+                const button = document.createElement('button');
+                button.innerText = unique;
+                buttonsContainer.appendChild(button);
             });
 
-            // Save the content whenever the editor changes
-            editor.onDidChangeModelContent(() => {
-                const currentContent = editor.getValue();
-                localStorage.setItem('editorContent', currentContent); // Save to localStorage
-            });
-        });
-
-        // Sidebar toggle functionality
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-
-        sidebarToggle.addEventListener('click', () => {
-            sidebarWrapper.classList.toggle('active');
-        });
-
-        // Close sidebar when clicking outside
-        sidebarWrapper.addEventListener('click', (e) => {
-            if (e.target === sidebarWrapper) {
-                sidebarWrapper.classList.remove('active');
-            }
-        });
-
-        // Category collapse/expand functionality
-        document.querySelectorAll('.category-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const category = header.parentElement;
-                category.querySelector('.collapsible-content').style.display = 
-                    category.querySelector('.collapsible-content').style.display === 'none' ? 'block' : 'none';
-                header.querySelector('i').classList.toggle('fa-chevron-up');
-                header.querySelector('i').classList.toggle('fa-chevron-down');
-            });
-        });
-
-        // Button click handler
-        document.querySelectorAll('.unique-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const unique = this.dataset.unique;
-                if (editor) {
-                    const position = editor.getPosition();
-                    editor.executeEdits('', [{
-                        range: new monaco.Range(
-                            position.lineNumber,
-                            position.column,
-                            position.lineNumber,
-                            position.column
-                        ),
-                        text: unique
-                    }]);
-                    editor.focus();
-                }
-            });
-        });
-
-        // Search and filter functionality
-        document.getElementById('searchInput').addEventListener('input', filterButtons);
-        document.getElementById('categoryFilter').addEventListener('change', filterButtons);
-
-        function filterButtons() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-
-            document.querySelectorAll('.category').forEach(categoryDiv => {
-                if (category === 'all' || categoryDiv.dataset.category === category) {
-                    categoryDiv.style.display = 'block';
-                    const buttons = categoryDiv.querySelectorAll('.unique-button');
-                    let hasVisibleButtons = false;
-                    buttons.forEach(button => {
-                        const matches = button.textContent.toLowerCase().includes(searchTerm);
-                        button.style.display = matches ? 'block' : 'none';
-                        if (matches) hasVisibleButtons = true;
-                    });
-                    categoryDiv.style.display = hasVisibleButtons ? 'block' : 'none';
-                } else {
-                    categoryDiv.style.display = 'none';
-                }
-            });
+            categoryDiv.appendChild(buttonsContainer);
+            categoriesContainer.appendChild(categoryDiv);
         }
     </script>
 </body>
