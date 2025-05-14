@@ -77,9 +77,9 @@
         // Initialize Monaco Editor
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
         require(['vs/editor/editor.main'], function() {
-            const savedContent = localStorage.getItem('editorContent') || ''; // Retrieve saved content
+            const savedContent = localStorage.getItem('editorContent') || ''; // Retrieve saved content or default to an empty string
             editor = monaco.editor.create(document.getElementById('monaco-editor'), {
-                value: savedContent, // Load saved content into the editor
+                value: savedContent, // Ensure this is empty if nothing is saved
                 language: 'json',
                 theme: 'vs-dark',
                 automaticLayout: true,
